@@ -2,16 +2,16 @@ version:'3'
 services:
   monolothic:
     build:
-      entrypoint:[]
-      ports:
-        -"8090:8030"
-      environment:
-        -SHOP_MONOLITH_BIND_ADDR:8080
-      volumes:
-        - ./cmd/:$GO_PROJECT_DIR/cmd
-        - ./pkg/:$GO_PROJECT_DIR/pkg/
-    orders:
-      build: .
+    entrypoint:[]
+    ports:
+       -"8090:8030"
+    environment:
+      -SHOP_MONOLITH_BIND_ADDR:8080
+    volumes:
+      - ./cmd/:$GO_PROJECT_DIR/cmd
+      - ./pkg/:$GO_PROJECT_DIR/pkg/
+  orders:
+    build: .
       entrypoint:[]
       ports:
         - "8070:8080"
@@ -23,26 +23,26 @@ services:
       volumes:
         depends_on:
           - rabbitmq
-      payments:
-        build: .
-        entrypoint:[]
-        volumes:
-        environment:
-          - SHOP_RABBITMQ_ADDR=rabbitmq:5672
-          - SHOP_RABBITMQ_ORDERS_TO_PAY_QUEUE=orders-to-pay
-          - SHOP_ORDERS_SERVIVICE_ADD=http://orders:8080
-        depends_on:
-          rabbitmq
-        shop:
-          build: .
-          entrypoint:[]
-          volumes:
-            environments:
-              - SHOP_SHOP_SERVICE_BIND_ADDR:8080
-            ports:
-              - "8071:8080"
-            depends_on:
-               - rabbitmq
+  payments:
+     build: .
+     entrypoint:[]
+     volumes:
+     environment:
+        - SHOP_RABBITMQ_ADDR=rabbitmq:5672
+        - SHOP_RABBITMQ_ORDERS_TO_PAY_QUEUE=orders-to-pay
+        - SHOP_ORDERS_SERVIVICE_ADD=http://orders:8080
+    depends_on:
+       rabbitmq
+  shop:
+    build: .
+    entrypoint:[]
+    volumes:
+    environments:
+       - SHOP_SHOP_SERVICE_BIND_ADDR:8080
+    ports:
+      - "8071:8080"
+    depends_on:
+        - rabbitmq
 
 //Docker Compose is a tool that allows you to deploy and manage multiple containers at the same time.
 //A Dockerfile is a file containing instructions to build a Docker image
