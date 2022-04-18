@@ -28,3 +28,19 @@ func main() {
 		}
 	}()
 }
+
+func createOrderMicroservice()(router *chi.Mux , closeFn func()){
+	cmd.WaitForService(os.Getenv("SHOP_RABBITMQ_ADDR"))
+
+	shopHttpClient := orders_infra_product.NewHttpClient(os.Getenv("SHOP_SERVICE_ADDR"))
+
+	r := cmd.createRouter()
+
+	orders_public_http.AddRoutes(r, ordersService,orderRespo)
+	orders_private_http.Addroutes(r ordersService, orderRespo)
+
+	return r , func() {
+
+	}
+
+}
